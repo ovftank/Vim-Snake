@@ -38,6 +38,15 @@ class VimSnake(QWidget):
                     self.direction = Qt.Key_Down
                 elif key == Qt.Key_K and self.direction != Qt.Key_Down:
                     self.direction = Qt.Key_Up
+        elif key == Qt.Key_Space:
+            if self.start_game:
+                self.reset_game()
+                self.start_game = False
+                self.timer.start(100)
+            elif self.game_over:
+                self.reset_game()
+                self.game_over = False
+                self.timer.start()
 
     def update_game(self):
         if not self.game_over:
@@ -96,22 +105,13 @@ class VimSnake(QWidget):
             painter.drawText(self.rect().bottomLeft() +
                              QPoint(10, -10), f"Điểm: {self.score}")
 
-    def mousePressEvent(self, event):
-        if self.start_game:
-            self.reset_game()
-            self.start_game = False
-            self.timer.start(100)
-        elif self.game_over:
-            self.reset_game()
-            self.game_over = False
-            self.timer.start()
-
     def reset_game(self):
         self.snake = [QPoint(100, 100), QPoint(90, 100), QPoint(80, 100)]
         self.direction = Qt.Key_Right
         self.food = self.generate_food()
         self.score = 0
         self.update()
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
