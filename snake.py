@@ -11,23 +11,18 @@ class VimSnake(QWidget):
         super(VimSnake, self).__init__()
 
         self.game_over = False
+        self.start_game = True
         self.score = 0
-
         self.init_ui()
 
     def init_ui(self):
         self.setWindowTitle('Vim Snake')
         self.setGeometry(100, 100, 400, 300)
-
         self.snake = [QPoint(100, 100), QPoint(90, 100), QPoint(80, 100)]
         self.direction = Qt.Key_Right
-
         self.food = self.generate_food()
-
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_game)
-        self.timer.start(100)
-
         self.show()
 
     def keyPressEvent(self, event):
@@ -55,18 +50,14 @@ class VimSnake(QWidget):
                 new_head = QPoint(new_head.x(), new_head.y() - 10)
             elif self.direction == Qt.Key_Down:
                 new_head = QPoint(new_head.x(), new_head.y() + 10)
-
             self.snake.insert(0, new_head)
-
             if new_head == self.food:
                 self.food = self.generate_food()
                 self.score += 10
             else:
                 self.snake.pop()
-
             if self.check_collision():
                 self.game_over = True
-
             self.update()
 
     def generate_food(self):
@@ -89,7 +80,12 @@ class VimSnake(QWidget):
         painter.fillRect(QRectF(self.food.x(), self.food.y(), 10, 10), QColor(
             "#50fa7b"))
 
-        if self.game_over:
+        if self.start_game:
+            painter.setPen(QColor("#50fa7b"))
+            painter.setFont(self.font())
+            painter.drawText(self.rect(), Qt.AlignCenter,
+                             f"Click để chơi")
+        elif self.game_over:
             painter.setPen(QColor("#ff5555"))
             painter.setFont(self.font())
             painter.drawText(self.rect(), Qt.AlignCenter,
@@ -101,7 +97,11 @@ class VimSnake(QWidget):
                              QPoint(10, -10), f"Điểm: {self.score}")
 
     def mousePressEvent(self, event):
-        if self.game_over:
+        if self.start_game:
+            self.reset_game()
+            self.start_game = False
+            self.timer.start(100)
+        elif self.game_over:
             self.reset_game()
             self.game_over = False
             self.timer.start()
@@ -112,7 +112,6 @@ class VimSnake(QWidget):
         self.food = self.generate_food()
         self.score = 0
         self.update()
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
