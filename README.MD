@@ -7,5 +7,4 @@
 
 ## Download
 
-- [Windows](link_tải_cho_windows) ⬇️
-- [Linux](link_tải_cho_linux) 🐧
+- [Windows](https://github.com/tripleseven190504/vim-snake/releases/download/1.0/vim_snake.exe) 
