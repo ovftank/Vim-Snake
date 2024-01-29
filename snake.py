@@ -38,15 +38,29 @@ class VimSnake(QWidget):
                     self.direction = Qt.Key_Down
                 elif key == Qt.Key_K and self.direction != Qt.Key_Down:
                     self.direction = Qt.Key_Up
-        elif key == Qt.Key_Space:
             if self.start_game:
                 self.reset_game()
                 self.start_game = False
                 self.timer.start(100)
-            elif self.game_over:
+        elif self.start_game:
+            self.reset_game()
+            self.start_game = False
+            self.timer.start(100)
+        elif self.game_over:
+            if key == Qt.Key_Space:
                 self.reset_game()
                 self.game_over = False
                 self.timer.start()
+        if key == Qt.Key_F1:
+            new_head = self.snake[0]
+            if self.direction == Qt.Key_Up:
+                self.food = QPoint(new_head.x(), new_head.y() - 20)
+            if self.direction == Qt.Key_Left:
+                self.food = QPoint(new_head.x() - 20, new_head.y())
+            if self.direction == Qt.Key_Down:
+                self.food = QPoint(new_head.x(), new_head.y() + 20)
+            if self.direction == Qt.Key_Right:
+                self.food = QPoint(new_head.x() + 20, new_head.y())
 
     def update_game(self):
         if not self.game_over:
@@ -93,12 +107,12 @@ class VimSnake(QWidget):
             painter.setPen(QColor("#50fa7b"))
             painter.setFont(self.font())
             painter.drawText(self.rect(), Qt.AlignCenter,
-                             f"Click để chơi")
+                             f"Nhấn phím bất kì để bắt đầu")
         elif self.game_over:
             painter.setPen(QColor("#ff5555"))
             painter.setFont(self.font())
             painter.drawText(self.rect(), Qt.AlignCenter,
-                             f"Thua cuộc - Điểm: {self.score}")
+                             f"Điểm: {self.score}\nNhấn phím 'Space' để chơi lại")
         else:
             painter.setPen(QColor("#f2f2f2"))
             painter.setFont(self.font())
